@@ -64,7 +64,6 @@ dependencies:
   - jupyterlab_server=2.27.2
   - jupyterlab_widgets=3.0.11
   - krb5=1.21.3
-  - libcxx=17.0.6
   - libedit=3.1.20191231
   - libexpat=2.6.2
   - libffi=3.4.2
@@ -102,8 +101,6 @@ dependencies:
   - pure_eval=0.2.2
   - pycparser=2.22
   - pygments=2.18.0
-  - pyobjc-core=10.3.1
-  - pyobjc-framework-cocoa=10.3.1
   - pysocks=1.7.1
   - python=3.11.9
   - python-dateutil=2.9.0

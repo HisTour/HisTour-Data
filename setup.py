@@ -4,9 +4,9 @@ with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="histour-ai",
+    name="nadeulAI_SSE",
     version="0.1",
-    description="AI Server For Histour Service",
+    description="SSE Transfer Server for nadeulAI Chatting Assistant Service",
     packages=find_packages(),
     author="suwonpabby",
     author_email="leeuj9663@naver.com",

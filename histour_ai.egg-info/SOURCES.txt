@@ -1,8 +1,0 @@
-README.md
-setup.py
-histour_ai/__init__.py
-histour_ai/test.py
-histour_ai.egg-info/PKG-INFO
-histour_ai.egg-info/SOURCES.txt
-histour_ai.egg-info/dependency_links.txt
-histour_ai.egg-info/top_level.txt

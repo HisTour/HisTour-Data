@@ -6,11 +6,14 @@ import json
 
 app = FastAPI()
 
-dummy_data = [{"type": "model_output", "contents": "수원"},
-              {"type": "model_output", "contents": "수원 화성에"},
-              {"type": "model_output", "contents": "수원 화성에 오신"},
-              {"type": "model_output", "contents": "수원 화성에 오신 것을"},
-              {"type": "model_output", "contents": "수원 화성에 오신 것을 환영합니다."}]
+dummy_data = [{"type": "model_output", "contents": "수원", "verbose": "질문에 대한 모델 출력입니다."},
+              {"type": "model_output", "contents": "수원 화성에",
+                  "verbose": "질문에 대한 모델 출력입니다."},
+              {"type": "model_output", "contents": "수원 화성에 오신",
+                  "verbose": "질문에 대한 모델 출력입니다."},
+              {"type": "model_output", "contents": "수원 화성에 오신 것을",
+                  "verbose": "질문에 대한 모델 출력입니다."},
+              {"type": "model_output", "contents": "수원 화성에 오신 것을 환영합니다.", "verbose": "질문에 대한 모델 출력입니다."}]
 
 
 async def event_stream():
@@ -33,6 +36,7 @@ async def event_stream():
     yield json.dumps(stop_signal, ensure_ascii=False)
 
 
-@app.get("/sse")
+@app.get("/sse", description="""SSE 통신은 String 전달만 가능하므로 (type, contents, verbose) 값이 stringify 된 json 형태로 전달됩니다.
+Ex. {"type": "model_output", "contents": "수원", "verbose": "질문에 대한 모델 출력입니다."}""")
 async def sse_endpoint():
     return StreamingResponse(event_stream(), media_type="text/event-stream")

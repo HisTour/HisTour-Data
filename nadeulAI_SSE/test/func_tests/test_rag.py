@@ -1,6 +1,6 @@
 import pytest
 import time
-from src.langchain.rag import retrieve
+from src.requests.rag import retrieve
 
 
 # Fixtures

@@ -12,13 +12,19 @@ from test.test_utils import is_valid_url
 
 @pytest.mark.urlrouter_unittest
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "qa_input",  # 파라미터 이름 정의
+    [
+        (["창룡문이 뭐야?"]),  # 테스트 케이스 1
+    ]
+)
 async def test_urlrouter():
     async with AsyncClient(app=app, base_url="http://0.0.0.0:8000") as async_client:
         url_router_response = await async_client.post(
             "/urlrouter",
             json={
                 "task_id": 0,
-                "QA": ["창룡문이 뭐야?"]
+                "QA": qa_input,
                 "type": "test"
             }
         )

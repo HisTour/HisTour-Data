@@ -1,5 +1,4 @@
 import pytest
-import redis
 from httpx import AsyncClient
 from src.main import app
 from test.test_utils import is_valid_url
@@ -10,7 +9,7 @@ from test.test_utils import is_valid_url
 
 # API Unit Test
 
-@pytest.mark.urlrouter_unittest
+@pytest.mark.urlrouter_apitest
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "qa_input",  # 파라미터 이름 정의
@@ -19,7 +18,7 @@ from test.test_utils import is_valid_url
     ]
 )
 async def test_urlrouter():
-    async with AsyncClient(app=app, base_url="http://0.0.0.0:8000") as async_client:
+    async with AsyncClient(app=app, base_url="http://test") as async_client:
         url_router_response = await async_client.post(
             "/urlrouter",
             json={

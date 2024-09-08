@@ -1,12 +1,9 @@
 from typing import List, Dict
 from fastapi import HTTPException
 from httpx import AsyncClient
+from credentials.constants import EMBEDDING_BASE_URL, DB_ABS_PATH
 import sqlite3
-import yaml
 
-with open("credential.yaml") as f:
-    credentials = yaml.safe_load(f)
-    EMBEDDING_BASE_URL = credentials["embedding_base_url"]
 
 TOP_K = 3
 
@@ -18,21 +15,23 @@ def qa_2_str_chat_format(QA: List[str]) -> str:
             message = f"Q: {item}\n"
         else: # A
             message = f"A: {item}\n"
-        str_chat_format.append(message)
+        str_chat_format += (message)
     
-    return str_chat_format
+    return str_chat_format.rstrip()
 
 async def request_to_embedding_server(str_chat_format:str, 
                                       candidate_sentences: List[str],
                                       top_k: int) -> List[str]:
+
     async with AsyncClient(base_url=EMBEDDING_BASE_URL) as async_client:
         embedding_response = await async_client.get(
             "/",
-            json={
-                "prompt": str_chat_format,
-                "candidates": candidate_sentences,
-                "top_k": top_k
-            }
+            params={
+            "prompt": str_chat_format,
+            "candidates": candidate_sentences,
+            "top_k": top_k
+            },
+            timeout=10.0
         )
 
         if embedding_response.status_code != 200:
@@ -57,15 +56,18 @@ async def retrieve(QA: List[str], task_id: int):
     str_chat_format = qa_2_str_chat_format(QA)
 
     # Connect Local DB and Get Candidate Sentences
-    conn = sqlite3.connect('example.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM task_document WHERE task_id=?", (task_id,))
-    rows = cursor.fetchall()
+    with sqlite3.connect(DB_ABS_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM task_document WHERE task_id=?", (task_id,))
+        rows = cursor.fetchall()
 
     candidate_sentences = []
     for row in rows:
-        document = row["document"]
-        candidate_sentences += document.split(".").rstrip()
+        document = row[1]
+        if document is None:
+             raise HTTPException(status_code=400, 
+                                 detail="챗봇을 연결할 수 없는 Task에서 챗봇 연결 요청을 보냈습니다.")
+        candidate_sentences += document.split(".")[:-1]
 
     rag_result = await request_to_embedding_server(str_chat_format=str_chat_format,
                                                    candidate_sentences=candidate_sentences,

@@ -1,6 +1,6 @@
 import pytest
 import time
-from nadeulAI_SSE.src.requests.rag import retrieve
+from nadeulAI_SSE.src.requests.request import retrieve
 from nadeulAI_SSE.test.test_data import qa_inputs
 
 # Fixtures

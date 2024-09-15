@@ -73,12 +73,3 @@ async def retrieve(QA: List[str], task_id: int):
                                                    candidate_sentences=candidate_sentences,
                                                    top_k=TOP_K)
     return rag_result
-
-
-        
-
-
-
-    
-    
-    

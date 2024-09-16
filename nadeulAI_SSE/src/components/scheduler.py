@@ -18,8 +18,7 @@ class Scheduler():
         await Scheduler.r_lb.flushdb()
         await Scheduler.r_schedule.flushdb()
         await Scheduler.r_lb.set("current_ai_server_idx", -1)
-        for _ in range(AI_SERVER_COUNT):
-            await Scheduler.r_lb.rpush("ai_server_is_busy", 0)
+        
 
     @staticmethod
     async def scheduling(assigned_transformed_dto: schemas.AssignTransformedDTO) -> str:
@@ -31,12 +30,13 @@ class Scheduler():
                 current_ai_server_idx = (current_ai_server_idx + 1) % AI_SERVER_COUNT
                 await Scheduler.r_lb.set("current_ai_server_idx", current_ai_server_idx)
 
-                if int(await Scheduler.r_lb.lindex("ai_server_is_busy", current_ai_server_idx)):
+                if await Scheduler.r_lb.get(f"ai_server_is_busy_{current_ai_server_idx}") is not None:
                     pass
                 else:
                     hash_id = Scheduler.make_hash(current_ai_server_idx, assigned_transformed_dto.character_type)
-                    await Scheduler.r_schedule.set(hash_id, json.dumps(assigned_transformed_dto.model_dump(), ensure_ascii=False))
-                    await Scheduler.r_lb.lset("ai_server_is_busy", current_ai_server_idx, 1)
+                    await Scheduler.r_schedule.set(hash_id, json.dumps(assigned_transformed_dto.model_dump(), ensure_ascii=False), ex=9)
+                    await Scheduler.r_lb.set(f"ai_server_is_busy_{current_ai_server_idx}", 1, ex=10)
+                    print(current_ai_server_idx)
                     return hash_id
                 idx += 1
                 if idx >= AI_SERVER_COUNT and not busy_log_flag:

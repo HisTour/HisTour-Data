@@ -10,10 +10,16 @@ class AssignRequest(BaseModel):
     task_sequence: int
 
     @field_validator('QA')
-    def check_item_length(cls, v):
+    def check_qa_length(cls, v):
         if len(v) % 2 == 0:
             raise ValueError("The length of QA List must be odd, not even.")
         return v
+    
+    @field_validator('')
+    def check_character_type(cls, v):
+        if v not in [0, 1, 2]:
+            raise ValueError("Invalid Character Type")
+
 
 class AssignData(BaseModel):
     url: str
@@ -21,5 +27,13 @@ class AssignData(BaseModel):
 class AssignResponse(BaseModel):
     data: AssignData
 
+
+class AssignTransformedDTO(BaseModel):
+    character_type: int
+    QA: List[str]
+    candidates: List[str]
+    top_k: int
+    
+    
 
 

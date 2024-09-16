@@ -7,15 +7,17 @@ class Preprocessor():
         self.db_path = db_path
         self.top_k = top_k
 
-    def transform(self, request: schemas.AssignRequest) -> Dict:
+    def transform(self, request: schemas.AssignRequest) -> schemas.AssignedTransformedDTO:
         result = dict()
-        result["QA"] = request["QA"]
+        result["QA"] = request.QA
         result["candidates"] = self.get_candidates(self.db_path,
-                                                   request["mission_name"],
-                                                   request["submission_name"],
-                                                   request["task_sequence"])
+                                                   request.mission_name,
+                                                   request.submission_name,
+                                                   request.task_sequence)
         result["top_k"] = self.top_k
-        result["character_type"] = request["character"]
+        result["character_type"] = request.character
+
+        result = schemas.AssignedTransformedDTO(**result)
         
         return result
     

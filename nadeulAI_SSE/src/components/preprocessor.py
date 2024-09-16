@@ -36,22 +36,12 @@ class Preprocessor():
             cursor.execute(query, (mission_name, submission_name, task_sequence))
             rows = cursor.fetchall()
 
-        candidate_sentences = [] 
+        candidate_sentences = []
+        if len(rows) == 0:
+            raise HTTPException(status_code=422, detail="Invalid Task Info (mission_name, submission_name, task_sequence)")
+            
         for row in rows:
             document = row[4]
-            if document is None:
-                raise HTTPException(status_code=422,
-                                    detail="Invalid Task Info")
             candidate_sentences += list(document.split(".")[:-1])
 
-        return candidate_sentences
-
-        
-        
-        
-        
-
-
-        
-        
-        
+        return candidate_sentences        

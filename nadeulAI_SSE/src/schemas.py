@@ -18,7 +18,7 @@ class AssignRequest(BaseModel):
     @field_validator('character')
     def check_character_type(cls, v):
         if v not in [0, 1, 2]:
-            raise ValueError("Invalid Character Type")
+            raise ValueError("Character Type must be in (0, 1, 2)")
         return v
 
 

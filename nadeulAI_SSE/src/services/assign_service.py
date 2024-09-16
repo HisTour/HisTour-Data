@@ -4,6 +4,7 @@ from nadeulAI_SSE.src.components.preprocessor import Preprocessor
 from nadeulAI_SSE.src.components.scheduler import Scheduler
 from confidential.constants import BASE_URL
 from pathlib import Path
+from fastapi import HTTPException
 
 
 async def service(request: schemas.AssignRequest):
@@ -13,6 +14,8 @@ async def service(request: schemas.AssignRequest):
 
     preprocessor = Preprocessor(db_path=db_path)
     transformed_dto = preprocessor.transform(request)
+    
+
 
     hash_id = await Scheduler.scheduling(transformed_dto)
     url = f"http://{BASE_URL}/sse?hash={hash_id}"

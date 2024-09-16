@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException
-from src import schemas
-from src.services import assign_service
+from nadeulAI_SSE.src import schemas
+from nadeulAI_SSE.src.services import assign_service
 from typing import Callable
 
 router = APIRouter()

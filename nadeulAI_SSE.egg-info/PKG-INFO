@@ -96,8 +96,6 @@ Requires-Dist: pycparser==2.22
 Requires-Dist: pydantic==2.8.2
 Requires-Dist: pydantic_core==2.20.1
 Requires-Dist: Pygments==2.18.0
-Requires-Dist: pyobjc-core==10.3.1
-Requires-Dist: pyobjc-framework-Cocoa==10.3.1
 Requires-Dist: PySocks==1.7.1
 Requires-Dist: python-dateutil==2.9.0
 Requires-Dist: python-dotenv==1.0.1

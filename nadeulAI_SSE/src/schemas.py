@@ -15,10 +15,11 @@ class AssignRequest(BaseModel):
             raise ValueError("The length of QA List must be odd, not even.")
         return v
     
-    @field_validator('')
+    @field_validator('character')
     def check_character_type(cls, v):
         if v not in [0, 1, 2]:
             raise ValueError("Invalid Character Type")
+        return v
 
 
 class AssignData(BaseModel):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
-from src import schemas
-from src.services import sse_service
+from nadeulAI_SSE.src import schemas
+from nadeulAI_SSE.src.services import sse_service
 from typing import Callable, AsyncGenerator
 import asyncio
 import logging

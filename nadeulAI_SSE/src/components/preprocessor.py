@@ -1,4 +1,4 @@
-from src import schemas
+from nadeulAI_SSE.src import schemas
 from typing import List, Dict
 from fastapi import HTTPException
 import sqlite3
@@ -7,28 +7,28 @@ class Preprocessor():
         self.db_path = db_path
         self.top_k = top_k
 
-    def transform(self, request: schemas.AssignRequest) -> schemas.AssignedTransformedDTO:
+    def transform(self, request: schemas.AssignRequest) -> schemas.AssignTransformedDTO:
         result = dict()
         result["QA"] = request.QA
-        result["candidates"] = self.get_candidates(self.db_path,
+        result["candidates"] = self._get_candidates(self.db_path,
                                                    request.mission_name,
                                                    request.submission_name,
                                                    request.task_sequence)
         result["top_k"] = self.top_k
         result["character_type"] = request.character
 
-        result = schemas.AssignedTransformedDTO(**result)
+        result = schemas.AssignTransformedDTO(**result)
         
         return result
     
-    def get_candidates(self, db_path: str,
+    def _get_candidates(self, db_path: str,
                        mission_name: str,
                        submission_name: str,
                        task_sequence:str) -> List[str]:
         with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()
             query = (
-                "SELECT * FROM candidates "
+                "SELECT * FROM knowledges "
                 "WHERE mission_name = ? AND "
                 "submission_name = ? AND "
                 "task_sequence = ?"
@@ -36,15 +36,15 @@ class Preprocessor():
             cursor.execute(query, (mission_name, submission_name, task_sequence))
             rows = cursor.fetchall()
 
-        candidates_sentences = [] 
+        candidate_sentences = [] 
         for row in rows:
-            document = row[1]
+            document = row[4]
             if document is None:
                 raise HTTPException(status_code=422,
                                     detail="Invalid Task Info")
-            candidate_sentences += document.split(".")[:-1]
+            candidate_sentences += list(document.split(".")[:-1])
 
-        return candidates_sentences
+        return candidate_sentences
 
         
         

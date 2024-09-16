@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from nadeulAI_SSE.src.routers.v1 import assign, sse
 
 app = FastAPI(docs_url="/docs", openapi_url="/open-api-docs")
 
-ai_server_num = 6
+app.include_router(assign.router, prefix="/assign")
+# app.include_router(sse.router, prefix="/sse")
 
-ai_servers = [{"id": i, "url":f""}]
+

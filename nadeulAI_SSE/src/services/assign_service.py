@@ -2,6 +2,7 @@ import asyncio
 from nadeulAI_SSE.src import schemas
 from nadeulAI_SSE.src.components.preprocessor import Preprocessor
 from nadeulAI_SSE.src.components.scheduler import Scheduler
+from confidential.constants import BASE_URL
 from pathlib import Path
 
 
@@ -14,8 +15,9 @@ async def service(request: schemas.AssignRequest):
     transformed_dto = preprocessor.transform(request)
 
     hash_id = await Scheduler.scheduling(transformed_dto)
-
-    return hash_id
+    url = f"http://{BASE_URL}/sse?hash={hash_id}"
+    await Scheduler.close()
+    return url
 
 
 async def main():

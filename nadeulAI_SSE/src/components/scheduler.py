@@ -1,4 +1,5 @@
 import redis.asyncio as aioredis
+import logging
 from confidential.constants import REDIS_HOST, REDIS_PORT, AI_SERVER_COUNT
 from nadeulAI_SSE.src import schemas
 import uuid
@@ -6,15 +7,14 @@ import json
 import asyncio
 
 class Scheduler():
-    r_lb = None
-    r_schedule = None
+    r_lb = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)
+    r_schedule = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=1, decode_responses=True)
     lock = asyncio.Lock()
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
 
     @staticmethod
     async def initialize() -> None:
-        Scheduler.r_lb = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)
-        Scheduler.r_schedule = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=1, decode_responses=True)
-
         await Scheduler.r_lb.flushdb()
         await Scheduler.r_schedule.flushdb()
         await Scheduler.r_lb.set("current_ai_server_idx", -1)
@@ -24,11 +24,13 @@ class Scheduler():
     @staticmethod
     async def scheduling(assigned_transformed_dto: schemas.AssignTransformedDTO) -> str:
         async with Scheduler.lock:
-            current_ai_server_idx = int(await Scheduler.r_lb.get("current_ai_server_idx"))
-            current_ai_server_idx = (current_ai_server_idx + 1) % AI_SERVER_COUNT
-            await Scheduler.r_lb.set("current_ai_server_idx", current_ai_server_idx)
-
+            idx = 0
+            busy_log_flag = False
             while True:
+                current_ai_server_idx = int(await Scheduler.r_lb.get("current_ai_server_idx"))
+                current_ai_server_idx = (current_ai_server_idx + 1) % AI_SERVER_COUNT
+                await Scheduler.r_lb.set("current_ai_server_idx", current_ai_server_idx)
+
                 if int(await Scheduler.r_lb.lindex("ai_server_is_busy", current_ai_server_idx)):
                     pass
                 else:
@@ -36,6 +38,10 @@ class Scheduler():
                     await Scheduler.r_schedule.set(hash_id, json.dumps(assigned_transformed_dto.model_dump(), ensure_ascii=False))
                     await Scheduler.r_lb.lset("ai_server_is_busy", current_ai_server_idx, 1)
                     return hash_id
+                idx += 1
+                if idx >= AI_SERVER_COUNT and not busy_log_flag:
+                    Scheduler.logger.warning("AI Servers are busy")
+                    busy_log_flag = True
 
     @staticmethod
     def make_hash(assigned_machine: int, character_type: int) -> str:

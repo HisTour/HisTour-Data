@@ -48,6 +48,7 @@ async def sse_endpoint(
         }
 
         character_type = int(hash[-1])
+        error_message = get_error_message(character_type)
 
         try:
             logger.info(f"SSE 스트림 시작: hash={hash}")
@@ -62,19 +63,16 @@ async def sse_endpoint(
 
         except HTTPException as he:
             logger.error(f"HTTPException 발생: {he.detail}")
-            error_message = get_error_message(character_type)
             yield f"data: {start_signal}\n\n"
             yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
 
         except asyncio.CancelledError:
             logger.warning("클라이언트 연결 취소")
-            error_message = get_error_message(character_type)
             yield f"data: {start_signal}\n\n"
             yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
 
         except Exception as e:
             logger.exception(f"예기치 않은 에러 발생: {str(e)}")
-            error_message = get_error_message(character_type)
             yield f"data: {start_signal}\n\n"
             yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
 

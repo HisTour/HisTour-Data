@@ -43,5 +43,8 @@ class Preprocessor():
         for row in rows:
             document = row[4]
             candidate_sentences += list(document.split(".")[:-1])
+        
+        candidate_sentences = [s for s in candidate_sentences if len(s) > 5]
+        
 
         return candidate_sentences        

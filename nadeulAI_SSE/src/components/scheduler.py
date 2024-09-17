@@ -34,8 +34,8 @@ class Scheduler():
                     pass
                 else:
                     hash_id = Scheduler.make_hash(current_ai_server_idx, assigned_transformed_dto.character_type)
-                    await Scheduler.r_schedule.set(hash_id, json.dumps(assigned_transformed_dto.model_dump(), ensure_ascii=False), ex=9)
-                    await Scheduler.r_lb.set(f"ai_server_is_busy_{current_ai_server_idx}", 1, ex=10)
+                    await Scheduler.r_schedule.set(hash_id, json.dumps(assigned_transformed_dto.model_dump(), ensure_ascii=False), ex=19)
+                    await Scheduler.r_lb.set(f"ai_server_is_busy_{current_ai_server_idx}", 1, ex=20)
                     print(current_ai_server_idx)
                     return hash_id
                 idx += 1

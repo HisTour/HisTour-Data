@@ -31,7 +31,7 @@ def get_error_message(character_type: int) -> dict:
             "verbose": "에러가 발생하여 이를 알리는 채팅 응답 발송"
         }
 
-@router.get("", status_code=200)
+@router.get("", status_code=200, description="클라이언트 측에서 제공받은 URL로 접근하는 API 입니다.")
 async def sse_endpoint(
     hash: str = Query(..., description="sse request hash value")):
     async def event_generator(hash: str):

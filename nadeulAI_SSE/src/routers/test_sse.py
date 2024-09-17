@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 import time
 import asyncio
 import json
 
-app = FastAPI()
+router = APIRouter()
 
 dummy_data = [{"type": "model_output", "contents": "수원", "verbose": "질문에 대한 모델 출력입니다."},
               {"type": "model_output", "contents": "수원 화성에",
@@ -36,7 +36,7 @@ async def event_stream():
     yield f"data: {json.dumps(stop_signal, ensure_ascii=False)}\n\n"
 
 
-@app.get("/sse", description="""SSE 통신은 String 전달만 가능하므로 (type, contents, verbose) 값이 stringify 된 json 형태로 전달됩니다.
+@router.get("", description="""SSE 통신은 String 전달만 가능하므로 (type, contents, verbose) 값이 stringify 된 json 형태로 전달됩니다.
 Ex. {"type": "model_output", "contents": "수원", "verbose": "질문에 대한 모델 출력입니다."}""")
 async def sse_endpoint():
     return StreamingResponse(event_stream(), media_type="text/event-stream")

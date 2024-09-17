@@ -8,7 +8,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG) 
 
-@router.post("", response_model=schemas.AssignResponse, status_code=201)
+@router.post("", response_model=schemas.AssignResponse, status_code=201, description="Java Spring 서버가 URL을 요청하는 API 입니다.")
 async def assign_endpoint(request: schemas.AssignRequest):
     url = await assign_service.service(request)
     return schemas.AssignResponse(data=schemas.AssignData(url=url))

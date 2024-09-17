@@ -17,6 +17,10 @@ class Preprocessor():
         result["top_k"] = self.top_k
         result["character_type"] = request.character
 
+        if len(result["QA"]) >= 5:
+            result["QA"] = result["QA"][-5:]
+
+
         result = schemas.AssignTransformedDTO(**result)
         
         return result

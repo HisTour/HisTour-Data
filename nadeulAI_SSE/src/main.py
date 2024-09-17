@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from nadeulAI_SSE.src.routers.v1 import assign, sse
+from nadeulAI_SSE.src.routers import test_sse
 from nadeulAI_SSE.src.components.scheduler import Scheduler
+from nadeulAI_SSE.src.components.awaker import Awaker
 from contextlib import asynccontextmanager
+import asyncio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -10,6 +13,8 @@ async def lifespan(app: FastAPI):
     # 초기화 로직 (예: DB 연결)
 
     await Scheduler.initialize()
+    asyncio.create_task(Awaker.awaker_on())
+    
 
     yield  # 여기가 실제로 앱이 동작하는 시점입니다.
     
@@ -22,5 +27,6 @@ app = FastAPI(docs_url="/docs", openapi_url="/open-api-docs", lifespan=lifespan)
 
 app.include_router(assign.router, prefix="/api/v1/assign")
 app.include_router(sse.router, prefix="/api/v1/sse")
+app.include_router(test_sse.router, prefix="/sse")
 
 

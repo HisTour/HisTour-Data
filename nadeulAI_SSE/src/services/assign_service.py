@@ -18,7 +18,7 @@ async def service(request: schemas.AssignRequest):
 
 
     hash_id = await Scheduler.scheduling(transformed_dto)
-    url = f"http://{BASE_URL}/sse?hash={hash_id}"
+    url = f"http://{BASE_URL}/api/v1/sse?hash={hash_id}"
     await Scheduler.close()
     return url
 

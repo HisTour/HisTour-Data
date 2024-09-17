@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(docs_url="/docs", openapi_url="/open-api-docs", lifespan=lifespan)
 
 
-app.include_router(assign.router, prefix="/assign")
-app.include_router(sse.router, prefix="/sse")
+app.include_router(assign.router, prefix="/api/v1/assign")
+app.include_router(sse.router, prefix="/api/v1/sse")
 
 

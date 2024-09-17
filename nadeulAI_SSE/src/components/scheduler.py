@@ -11,7 +11,7 @@ class Scheduler():
     r_schedule = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=1, decode_responses=True)
     lock = asyncio.Lock()
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     @staticmethod
     async def initialize() -> None:

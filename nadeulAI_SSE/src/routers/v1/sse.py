@@ -52,32 +52,32 @@ async def sse_endpoint(
 
         try:
             logger.info(f"SSE 스트림 시작: hash={hash}")
-            yield f"data: {json.dumps(url_connected_signal, ensure_ascii=False)}\n\n"
+            yield f"data: {json.dumps(url_connected_signal, ensure_ascii=False)}\n\n".replace("'", '"')
             async for message in sse_service.service(hash):
                 if message != "No Response":
-                    yield f"data: {message}\n\n"
+                    yield f"data: {message}\n\n".replace("'", '"')
                 else:
-                    yield f"data: {start_signal}\n\n"
-                    yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
+                    yield f"data: {start_signal}\n\n".replace("'", '"')
+                    yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n".replace("'", '"')
 
 
         except HTTPException as he:
             logger.error(f"HTTPException 발생: {he.detail}")
-            yield f"data: {start_signal}\n\n"
-            yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
+            yield f"data: {start_signal}\n\n".replace("'", '"')
+            yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n".replace("'", '"')
 
         except asyncio.CancelledError:
             logger.warning("클라이언트 연결 취소")
-            yield f"data: {start_signal}\n\n"
-            yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
+            yield f"data: {start_signal}\n\n".replace("'", '"')
+            yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n".replace("'", '"')
 
         except Exception as e:
             logger.exception(f"예기치 않은 에러 발생: {str(e)}")
-            yield f"data: {start_signal}\n\n"
-            yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n"
+            yield f"data: {start_signal}\n\n".replace("'", '"')
+            yield f"data: {json.dumps(error_message, ensure_ascii=False)}\n\n".replace("'", '"')
 
         finally:
             logger.info(f"SSE 스트림 종료: hash={hash}")
-            yield f"data: {json.dumps(stop_signal, ensure_ascii=False)}\n\n"
+            yield f"data: {json.dumps(stop_signal, ensure_ascii=False)}\n\n".replace("'", '"')
 
     return StreamingResponse(event_generator(hash), media_type="text/event-stream")

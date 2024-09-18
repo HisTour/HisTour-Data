@@ -37,7 +37,7 @@ async def service(hash: str):
                     if is_first:
                         yield start_signal
                         is_first = False
-                    result_text += chunk
+                    result_text += chunk.replace("'", "").replace('"', '')
                     model_output = {"type": "model_output",
                                     "contents": result_text,
                                     "verbose": "질문에 대한 모델 출력입니다."}

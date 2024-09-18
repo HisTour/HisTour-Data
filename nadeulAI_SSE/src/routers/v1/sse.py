@@ -15,19 +15,19 @@ def get_error_message(character_type: int) -> dict:
     if character_type == 0:
         return {
             "type": "model_output",
-            "contents": "앗 미안해.. 서버에 문제가 발생한 것 같아. 다시 한 번만 더 물어봐줄 수 있을까?",
+            "contents": "앗 미안해.. 서버에 문제가 발생했거나, 이 미션 주제랑 너무 다른 질문을 한 것 같아. 다시 한 번만 더 물어봐줄 수 있을까?",
             "verbose": "에러가 발생하여 이를 알리는 채팅 응답 발송"
         }
     elif character_type == 1:
         return {
             "type": "model_output",
-            "contents": "헉!!! 미안해!! 서버에 문제가 발생한 것 같아!! 다시 한 번만 더 물어봐줄래?!!",
+            "contents": "헉!!! 미안해!! 서버에 문제가 발생했거나 이 미션 주제랑 너무 다른 질문을 한 것 같아!!! 다시 한 번만 더 물어봐줄래?!!",
             "verbose": "에러가 발생하여 이를 알리는 채팅 응답 발송"
         }
     else:
         return {
             "type": "model_output",
-            "contents": "허엄.... 서버 장치에 문제가 발생한 듯 하오.... 미안하네만 한 번 더 물어봐 줄 수 있나...?",
+            "contents": "허엄.... 서버 장치에 문제가 발생했거나 이 미션 주제랑 너무 다른 질문을 한 듯 하오.... 미안하네만 한 번 더 물어봐 줄 수 있나...?",
             "verbose": "에러가 발생하여 이를 알리는 채팅 응답 발송"
         }
 

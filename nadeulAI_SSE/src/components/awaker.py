@@ -17,7 +17,7 @@ class Awaker:
                 await Awaker.r_lb.set(f"ai_server_is_busy_{machine_idx}", 1, ex=40)
                 await Awaker.keep_ai_server_awake(machine_idx)
                 await Awaker.r_lb.delete(f"ai_server_is_busy_{machine_idx}")
-                await asyncio.sleep(300)  
+                await asyncio.sleep(600)  
 
 
     @staticmethod

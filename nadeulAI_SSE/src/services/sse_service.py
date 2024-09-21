@@ -38,6 +38,7 @@ async def service(hash: str):
                         yield start_signal
                         is_first = False
                     result_text += chunk.replace("'", "").replace('"', '')
+                    result_text.replace("[말투반영]", "")
                     model_output = {"type": "model_output",
                                     "contents": result_text,
                                     "verbose": "질문에 대한 모델 출력입니다."}

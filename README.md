@@ -311,3 +311,10 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=7860)
 ```
 </details>
+
+
+## Git Convention 관련해서 부족했던 점
+- Branch를 따로 파지 않는 작업에 대해서도 Issue 부여하고 Issue Tag하면 커밋들이 잘 분류된다.
+- 그런데 나는 Branch를 따로 파는 작업에 대해서만 Issue 작성함
+- 다음부터는 Branch 따로 안 팔 때도 Issue를 파고 거기에 커밋 내역들을 모으자.
+

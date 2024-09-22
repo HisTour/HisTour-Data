@@ -8,6 +8,7 @@ class Awaker:
     logger = logging.getLogger(__name__)
     logging.basicConfig(level=logging.INFO)
     r_lb = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)
+    period = 2000
 
     @staticmethod
     async def awaker_on():
@@ -17,7 +18,7 @@ class Awaker:
                 await Awaker.r_lb.set(f"ai_server_is_busy_{machine_idx}", 1, ex=40)
                 await Awaker.keep_ai_server_awake(machine_idx)
                 await Awaker.r_lb.delete(f"ai_server_is_busy_{machine_idx}")
-                await asyncio.sleep(600)  
+                await asyncio.sleep(Awaker.period)  
 
 
     @staticmethod

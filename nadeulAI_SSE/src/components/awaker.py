@@ -8,7 +8,7 @@ class Awaker:
     logger = logging.getLogger(__name__)
     logging.basicConfig(level=logging.INFO)
     r_lb = aioredis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)
-    period = 2000
+    period = 3000
 
     @staticmethod
     async def awaker_on():

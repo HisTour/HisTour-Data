@@ -20,7 +20,7 @@ async def service(hash: str):
     assigned_transformed_str = await r_schedule.get(hash)
     assigned_transformed_dto = schemas.AssignTransformedDTO(**json.loads(assigned_transformed_str))
 
-    asyncio.create_task(r_schedule.set(hash, assigned_transformed_str, ex=40))
+    await r_schedule.delete(hash, assigned_transformed_str)
     asyncio.create_task(r_lb.set(f"ai_server_is_busy_{machine_idx}", 1, ex=40))
 
     try:
@@ -52,7 +52,6 @@ async def service(hash: str):
         yield "No Response"
 
     finally:
-        await r_schedule.delete(hash, assigned_transformed_str)
         await r_lb.delete(f"ai_server_is_busy_{machine_idx}")
         await r_schedule.close()
         await r_lb.close()

@@ -6,6 +6,9 @@
 
 <img width="2411" alt="nadeul_ai_diagram" src="https://github.com/user-attachments/assets/f9f2362f-f5da-4b35-bb93-55c43c857bf9">
 
+<p align="center">
+<img src="https://github.com/user-attachments/assets/cf82f8dc-749d-40cc-9da3-c96f1f3bb189">
+</p>
 
 ## Objective
 - 나들ai 서비스는 여행을 다니며 다양한 미션을 수행하고, 여행지에 대한 다양한 역사 정보 등을 얻을 수 있는 앱입니다.

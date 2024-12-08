@@ -5,6 +5,12 @@
 
 <img width="2411" alt="나들ai구조도" src="https://github.com/user-attachments/assets/7b3c2349-b530-47e8-a2a1-b093a20fe7c9">
 
+
+## AI Server 서빙 코드
+
+서빙코드 파일
+
+
 ## Objective
 - 나들ai 서비스는 여행을 다니며 다양한 미션을 수행하고, 여행지에 대한 다양한 역사 정보 등을 얻을 수 있는 앱입니다.
 - 특히 미션을 수행하는 과정에서, 사용자가 선택한 캐릭터에게 질문을 할 수 있습니다.

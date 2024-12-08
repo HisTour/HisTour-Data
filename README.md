@@ -3,12 +3,8 @@
 ## AI Server Architecture
 
 
-<img width="2411" alt="나들ai구조도" src="https://github.com/user-attachments/assets/7b3c2349-b530-47e8-a2a1-b093a20fe7c9">
 
-
-## AI Server 서빙 코드
-
-[서빙코드.py](https://github.com/HisTour/HisTour-AI/blob/dev/ai_model_server/app.py)
+<img width="2411" alt="nadeul_ai_diagram" src="https://github.com/user-attachments/assets/f9f2362f-f5da-4b35-bb93-55c43c857bf9">
 
 
 ## Objective
@@ -30,11 +26,10 @@
 4. Python Server는 이 정보를 Redis에 임시 저장하며, 적절한 AI 머신을 할당한 뒤 App Client가 접속 가능한 URL을 생성해서 Java Spring Server에 제공합니다.
 5. Java Spring Server는 이 URL을 App Client에게 제공합니다.
 6. App client가 URL에 접속하면 Python 서버에 직접 접속하게 되며, Python 서버가 Redis에 저장한 정보를 활용하여 AI 서버와 Streaming 통신을 매개하게 됩니다.
-7. (이 부분은 아직 미구현, 필요 시 구현) 통신이 완료되면 관련 결과를 Spring Server에 보고합니다.
 
 ## Python Server Components
 
-### View (Router)
+### Router
 - Spring Server와 소통하는 endpoint인 `assign` endpoint가 있는 곳입니다.
 - App Client와 소통하는 endpoint인 `sse` endpoint가 있는 곳입니다.
 
@@ -57,6 +52,8 @@
 - HF AI Server에서는 BGE-M3 임베딩 모델을 이용해 RAG를 수행하고, Qwen2 7B Instruct Model을 이용해 LLM 답변을 만들어냅니다.
 - Prompting은 Few Shot과 CoT를 활용하였습니다.
 - [말투반영]이 Output으로 나왔을 때부터 App Client에게 Streaming Data를 전송합니다.
+
+[서빙코드.py](https://github.com/HisTour/HisTour-AI/blob/dev/ai_model_server/app.py)
 
 <details>
   <summary>AI Server 내부 코드 확인하기</summary>

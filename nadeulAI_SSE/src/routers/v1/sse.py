@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from nadeulAI_SSE.src import schemas
 from nadeulAI_SSE.src.services import sse_service
-from nadeulAI_SSE.src.components.signals import *
+from nadeulAI_SSE.src.constants.signals import *
 from typing import List
 from dataclasses import asdict
 import asyncio

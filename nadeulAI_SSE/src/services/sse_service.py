@@ -3,7 +3,7 @@ import redis.asyncio as aioredis
 import logging
 import json
 from nadeulAI_SSE.src import schemas
-from nadeulAI_SSE.src.components.signals import START_SIGNAL
+from nadeulAI_SSE.src.constants.signals import START_SIGNAL
 from confidential.constants import REDIS_HOST, REDIS_PORT, AI_SERVER_BASE_URL
 from pathlib import Path
 from fastapi import HTTPException

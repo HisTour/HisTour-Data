@@ -8,7 +8,7 @@
 
 ## AI Server 서빙 코드
 
-서빙코드 파일
+[서빙코드.py](https://github.com/HisTour/HisTour-AI/blob/dev/ai_model_server/app.py)
 
 
 ## Objective

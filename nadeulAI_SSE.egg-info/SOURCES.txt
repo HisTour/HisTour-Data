@@ -8,5 +8,4 @@ nadeulAI_SSE.egg-info/requires.txt
 nadeulAI_SSE.egg-info/top_level.txt
 nadeulAI_SSE/src/__init__.py
 nadeulAI_SSE/src/main.py
-nadeulAI_SSE/src/request.py
 nadeulAI_SSE/src/schemas.py

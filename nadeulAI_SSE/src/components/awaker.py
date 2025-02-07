@@ -13,12 +13,12 @@ class Awaker:
     @staticmethod
     async def awaker_on():
         print("awaker: on")
-        while True:
-            for machine_idx in range(AI_SERVER_COUNT):
-                await Awaker.r_lb.set(f"ai_server_is_busy_{machine_idx}", 1, ex=40)
-                await Awaker.keep_ai_server_awake(machine_idx)
-                await Awaker.r_lb.delete(f"ai_server_is_busy_{machine_idx}")
-                await asyncio.sleep(Awaker.period)  
+        # while True:
+        #     for machine_idx in range(AI_SERVER_COUNT):
+        #         await Awaker.r_lb.set(f"ai_server_is_busy_{machine_idx}", 1, ex=40)
+        #         await Awaker.keep_ai_server_awake(machine_idx)
+        #         await Awaker.r_lb.delete(f"ai_server_is_busy_{machine_idx}")
+        #         await asyncio.sleep(Awaker.period)  
 
 
     @staticmethod

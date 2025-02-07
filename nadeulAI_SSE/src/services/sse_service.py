@@ -36,7 +36,7 @@ async def service(hash: str):
             base_url=AI_SERVER_BASE_URL.format(str(machine_idx))
         ) as async_client:
             async with async_client.stream(
-                "POST", "/", json={**assigned_transformed_dto.model_dump()}, timeout=40
+                "POST", "/", json={**assigned_transformed_dto.model_dump()}, timeout=4000
             ) as response:
                 result_text = ""
                 is_first = True
@@ -59,6 +59,16 @@ async def service(hash: str):
                     yield "No Response"
 
     except TimeoutException:
+        print("timeout exception")
+        yield "No Response"
+
+
+    except HTTPException as e:
+        print("http exception: ", e)
+        yield "No Response"
+
+    except Exception as e:
+        print("exception: ", e)
         yield "No Response"
 
     finally:

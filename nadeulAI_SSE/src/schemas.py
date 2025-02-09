@@ -35,7 +35,7 @@ class AssignResponse(BaseModel):
 class AssignTransformedDTO(BaseModel):
     character_type: int
     QA: List[str]
-    candidates: List[str]
+    rag_results: List[str]
     top_k: int
 
 

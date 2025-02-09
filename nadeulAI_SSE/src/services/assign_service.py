@@ -10,12 +10,10 @@ from fastapi import HTTPException
 async def service(request: schemas.AssignRequest):
     current_file = Path(__file__).resolve()
     src_root = current_file.parents[1]
-    db_path = src_root / "database" / "python_inner.db"
+    vector_db_path = src_root / "database" / "vector_db"
 
-    preprocessor = Preprocessor(db_path=db_path)
+    preprocessor = Preprocessor(vector_db_path=vector_db_path)
     transformed_dto = preprocessor.transform(request)
-    
-
 
     hash_id = await Scheduler.scheduling(transformed_dto)
     url = f"http://{BASE_URL}/api/v1/sse?hash={hash_id}"
@@ -30,7 +28,7 @@ async def main():
         QA=["안녕하세요?", "반가워요", "잘지내요?"],
         mission_name="테스트용 미션 이름",
         submission_name="테스트용 서브 미션 이름",
-        task_sequence=1
+        task_sequence=1,
     )
 
     # Scheduler 초기화 (비동기일 경우 await로 대기)

@@ -2,7 +2,7 @@ import asyncio
 from nadeulAI_SSE.src import schemas
 from nadeulAI_SSE.src.components.preprocessor import Preprocessor
 from nadeulAI_SSE.src.components.scheduler import Scheduler
-from confidential.constants import BASE_URL
+from nadeulAI_SSE.src.confidential.constants import BASE_URL
 from pathlib import Path
 from fastapi import HTTPException
 
@@ -10,10 +10,10 @@ from fastapi import HTTPException
 async def service(request: schemas.AssignRequest):
     current_file = Path(__file__).resolve()
     src_root = current_file.parents[1]
-    vector_db_path = src_root / "database" / "vector_db"
+    vector_db_path = str(src_root / "database" / "vector_db")
 
-    preprocessor = Preprocessor(vector_db_path=vector_db_path)
-    transformed_dto = preprocessor.transform(request)
+    transformed_dto = Preprocessor.transform(request)
+    print(transformed_dto)
 
     hash_id = await Scheduler.scheduling(transformed_dto)
     url = f"http://{BASE_URL}/api/v1/sse?hash={hash_id}"

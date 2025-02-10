@@ -7,32 +7,51 @@ import chromadb
 
 
 class Preprocessor:
-    def __init__(self, vector_db_path: str, top_k: int = 3) -> None:
-        self.vector_db_path = vector_db_path
-        self.top_k = top_k
+    vector_db_path = None
+    top_k = None
+    client = None
+    collection = None
 
-    def transform(self, request: schemas.AssignRequest) -> schemas.AssignTransformedDTO:
+    @staticmethod
+    def initialize(vector_db_path: str, top_k: int = 3) -> None:
+        Preprocessor.vector_db_path = vector_db_path
+        Preprocessor.top_k = top_k
+
+        # 클라이언트 설정에 silent=True 추가
+        Preprocessor.client = chromadb.PersistentClient(
+            path=vector_db_path,
+            settings=chromadb.Settings(anonymized_telemetry=False, is_persistent=True),
+        )
+
+        Preprocessor.collection = Preprocessor.client.get_or_create_collection(
+            name="knowledge_base"
+        )
+
+    @staticmethod
+    def transform(request: schemas.AssignRequest) -> schemas.AssignTransformedDTO:
+
         result = dict()
         result["QA"] = request.QA
 
         if len(result["QA"]) >= 5:
             result["QA"] = result["QA"][-5:]
 
-        result["rag_results"] = self._get_rag_results(
+        result["rag_results"] = Preprocessor._get_rag_results(
             result["QA"],
             request.mission_name,
             request.submission_name,
             request.task_sequence,
         )
-        result["top_k"] = self.top_k
+
+        result["top_k"] = Preprocessor.top_k
         result["character_type"] = request.character
 
         result = schemas.AssignTransformedDTO(**result)
 
         return result
 
+    @staticmethod
     def _get_rag_results(
-        self,
         query_text_list: List[str],
         mission_name: str,
         submission_name: str,
@@ -41,28 +60,25 @@ class Preprocessor:
         result_set = set()
         for query_text in query_text_list:
             result_set.update(
-                self._query_similar_docs(
+                Preprocessor._query_similar_docs(
                     query_text,
                     metadata_filter={
                         "mission_name": mission_name,
                         "submission_name": submission_name,
                         "task_sequence": task_sequence,
                     },
-                    n_results=self.top_k,
+                    n_results=Preprocessor.top_k,
                 )
             )
 
         return list(result_set)
 
+    @staticmethod
     def _query_similar_docs(
-        self,
         query_text: str,
         metadata_filter: Optional[Dict[str, Any]] = None,
         n_results: int = 3,
     ) -> List[Dict[str, Any]]:
-
-        client = chromadb.PersistentClient(path=self.vector_db_path)
-        collection = client.get_collection(name="knowledge_base")
 
         where_condition = None
         if metadata_filter:
@@ -70,7 +86,7 @@ class Preprocessor:
                 "$and": [{key: value} for key, value in metadata_filter.items()]
             }
 
-        results = collection.query(
+        results = Preprocessor.collection.query(
             query_texts=[query_text],
             where=where_condition,
             n_results=n_results,
@@ -78,14 +94,20 @@ class Preprocessor:
         )
 
         formatted_results = []
-
         for doc in results["documents"][0]:
             formatted_results.append(doc)
 
+        if len(formatted_results) == 0:
+            raise HTTPException(
+                status_code=422,
+                detail="Invalid Task Info (mission_name, submission_name, task_sequence)",
+            )
+
         return formatted_results
 
+    @staticmethod
     def _get_candidates(
-        self, db_path: str, mission_name: str, submission_name: str, task_sequence: str
+        db_path: str, mission_name: str, submission_name: str, task_sequence: str
     ) -> List[str]:
         with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()

@@ -1,8 +1,14 @@
-from confidential.constants import AI_SERVER_BASE_URL, AI_SERVER_COUNT, REDIS_HOST, REDIS_PORT
+from nadeulAI_SSE.src.confidential.constants import (
+    AI_SERVER_BASE_URL,
+    AI_SERVER_COUNT,
+    REDIS_HOST,
+    REDIS_PORT,
+)
 from httpx import TimeoutException, AsyncClient
 import asyncio
 import logging
 import redis.asyncio as aioredis
+
 
 class Awaker:
     logger = logging.getLogger(__name__)
@@ -18,8 +24,7 @@ class Awaker:
         #         await Awaker.r_lb.set(f"ai_server_is_busy_{machine_idx}", 1, ex=40)
         #         await Awaker.keep_ai_server_awake(machine_idx)
         #         await Awaker.r_lb.delete(f"ai_server_is_busy_{machine_idx}")
-        #         await asyncio.sleep(Awaker.period)  
-
+        #         await asyncio.sleep(Awaker.period)
 
     @staticmethod
     async def keep_ai_server_awake(ai_server_idx):
@@ -56,34 +61,48 @@ class Awaker:
                 "\n문화재: 화성행궁은 한국의 국보급 문화재로서, 조선 후기 건축물과 궁궐 문화를 연구하는 중요한 자료입니다",
                 " 정조의 행차 재현 행사\n매년 화성행궁에서는 정조대왕 능행차라는 이름으로 정조의 행차를 재현하는 대규모 퍼레이드가 열립니다",
                 " 이 행사는 정조가 아버지 사도세자의 능을 참배하러 가는 여정을 재현한 것으로, 역사적 의미를 되새기고 당시의 문화를 체험할 수 있는 특별한 행사입니다",
-                "\n\n화성행궁은 조선 왕조의 정치, 군사, 문화의 중심지로서 큰 역할을 했고, 오늘날에는 그 역사적 가치를 기리며 다양한 문화 체험의 장이 되고 있습니다"
+                "\n\n화성행궁은 조선 왕조의 정치, 군사, 문화의 중심지로서 큰 역할을 했고, 오늘날에는 그 역사적 가치를 기리며 다양한 문화 체험의 장이 되고 있습니다",
             ]
-            async with AsyncClient(base_url=AI_SERVER_BASE_URL.format(ai_server_idx)) as async_client:
+            async with AsyncClient(
+                base_url=AI_SERVER_BASE_URL.format(ai_server_idx)
+            ) as async_client:
                 async with async_client.stream(
-                    "POST", "/", json={
+                    "POST",
+                    "/",
+                    json={
                         "character_type": 2,
                         "QA": ["화성행궁에 대해 알려줘."],
                         "candidates": candidates,
-                        "top_k": 3
-                    }, timeout=100) as response:
+                        "top_k": 3,
+                    },
+                    timeout=100,
+                ) as response:
                     result_text = ""
                     is_first = True
-                    start_signal = {"type": "signal", "contents": "start",
-                                    "verbose": "내 차례가 되어 AI 모델과 스트리밍 세션이 연결됨, 로딩 뷰 종료"}
+                    start_signal = {
+                        "type": "signal",
+                        "contents": "start",
+                        "verbose": "내 차례가 되어 AI 모델과 스트리밍 세션이 연결됨, 로딩 뷰 종료",
+                    }
 
                     async for chunk in response.aiter_text():
                         if is_first:
                             is_first = False
                         result_text += chunk
-                        model_output = {"type": "model_output",
-                                        "contents": result_text,
-                                        "verbose": "질문에 대한 모델 출력입니다."}
+                        model_output = {
+                            "type": "model_output",
+                            "contents": result_text,
+                            "verbose": "질문에 대한 모델 출력입니다.",
+                        }
                     if is_first:
                         pass
         except TimeoutException:
             Awaker.logger.error(f"Timeout occurred for server {ai_server_idx}")
         except Exception as e:
-            Awaker.logger.error(f"An error occurred for server {ai_server_idx}: {str(e)}")
+            Awaker.logger.error(
+                f"An error occurred for server {ai_server_idx}: {str(e)}"
+            )
+
 
 if __name__ == "__main__":
     asyncio.run(Awaker.awaker_on())

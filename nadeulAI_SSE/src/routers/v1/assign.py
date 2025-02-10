@@ -17,5 +17,8 @@ logger.setLevel(logging.DEBUG)
     description="Java Spring 서버가 URL을 요청하는 API 입니다.",
 )
 async def assign_endpoint(request: schemas.AssignRequest):
+    start_time = time.time()
     url = await assign_service.service(request)
+
+    print(f"Time taken: {time.time() - start_time} seconds")
     return schemas.AssignResponse(data=schemas.AssignData(url=url))

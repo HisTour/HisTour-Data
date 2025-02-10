@@ -55,9 +55,9 @@ for row in rows[1:]:
         collection.add(
             documents=[chunk],
             metadatas=[metadata],
-            ids=[f"{mission_name}_{submission_name}_{i}"],
+            ids=[f"{mission_name}_{submission_name}_{task_sequence}_{i}"],
         )
-    print(f"COMPLETE: {mission_name}_{submission_name}_{i}")
+        print(f"COMPLETE: {mission_name}_{submission_name}_{task_sequence}_{i}")
 
 # 벡터 DB를 파일로 저장
 conn.close()
